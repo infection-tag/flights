@@ -1,54 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Global Flight Tracker</title>
-  
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.js"></script>
-  <script src="https://unpkg.com/globe.gl"></script>
-
-  <style>
-    /* Document Setup */
-    html, body, #app { 
-      margin: 0; 
-      padding: 0; 
-      width: 100%; 
-      height: 100%; 
-      background: #000; 
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-    
-    #globeViz { 
-      width: 100%; 
-      height: 100%; 
-      display: block; 
-    }
-
-    /* Globe Label Tooltip Layout */
-    .globe-tooltip {
-      padding: 8px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid #334155;
-      border-radius: 4px;
-      font-family: sans-serif;
-    }
-  </style>
-</head>
-<body>
-
-  <div id="app">
-    <router-view></router-view>
-  </div>
-
-  <script src="./destinations/bangui.js"></script>
-  <script src="./destinations/kinshasa.js"></script>
-  <script src="./destinations/new-delhi.js"></script>
-  <script src="./destinations/paris.js"></script>
-  <script src="./destinations/shanghai.js"></script>
-  <script src="./destinations/taipei.js"></script>
-  <script src="./destinations/tel-aviv.js"></script>
-  
 <script type="module">
     const { ref, onMounted } = Vue;
     const { createRouter, createWebHashHistory } = VueRouter;
@@ -108,29 +57,35 @@
               .labelSize(1.3)
               .labelDotRadius(0.5)
               .labelColor(d => d.name.includes("SFO") ? '#00ffcc' : '#ff9f43')
-              .labelLabel(d => `
+              .labelLabel(d => {
+                // Completely skip rendering the tooltip box if the user hovers over SFO
+                if (d.name.includes("SFO")) return '';
+
+                return `
                   <div class="globe-tooltip">
-                    <strong style="color: ${d.name && d.name.includes('SFO') ? '#00ffcc' : '#ff9f43'}; font-size: 14px;">${d.name || "Flight Route"}</strong>
+                    <strong style="color: #ff9f43; font-size: 14px;">${d.name || "Flight Route"}</strong>
                     <div style="color: #00ffcc; font-size: 12px; margin-top: 4px;">Price: ${d.price === "$0" ? "Calculating..." : d.price}</div>
                     <div style="font-size: 11px; margin-top: 8px; color: #fff; opacity:0.6;">👉 Click to view analysis</div>
                   </div>
-                `)
+                `;
+              })
               // 💻 HOVER INTERACTION LOGIC
               .onLabelHover(hoveredPoint => {
-                // If hovering over a valid destination (and not the SFO origin hub itself)
-                if (hoveredPoint && !hoveredPoint.name.includes("SFO")) {
-                  const dynamicPath = [{
-                    startLat: SFO_LAT,
-                    startLng: SFO_LNG,
-                    endLat: hoveredPoint.lat,
-                    endLng: hoveredPoint.lng
-                  }];
-                  // Draw the single path immediately on hover
-                  world.arcsData(dynamicPath);
-                } else {
-                  // Clear the flight paths entirely when mouse leaves the label
-                  world.arcsData([]); 
+                // Explicitly check if there's no item, or if the item is SFO
+                if (!hoveredPoint || hoveredPoint.name.includes("SFO")) {
+                  world.arcsData([]); // Strip lines completely
+                  return; // Stop execution right here
                 }
+
+                // If it passes the filter, it's a real destination destination!
+                const dynamicPath = [{
+                  startLat: SFO_LAT,
+                  startLng: SFO_LNG,
+                  endLat: hoveredPoint.lat,
+                  endLng: hoveredPoint.lng
+                }];
+                
+                world.arcsData(dynamicPath);
               })
               .onLabelClick(d => {
                 if (d.url && d.url !== "#") {
@@ -172,5 +127,3 @@
     app.use(router);
     app.mount('#app');
   </script>
-</body>
-</html>
