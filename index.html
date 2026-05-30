@@ -80,7 +80,6 @@
             lng: SFO_LNG,
             name: "San Francisco (SFO)",
             url: "#"
-            isOrigin: true
           };
 
           // Map Layer Logic Builder
@@ -109,10 +108,8 @@
               .labelDotRadius(0.5)
               .labelColor(d => d.name.includes("SFO") ? '#00ffcc' : '#ff9f43')
               .labelLabel(d => 
-                if (d.isOrigin) return '';
-                
-                return `
-                  <div class="globe-tooltip">
+                if (d.name.includes("SFO")) return '';
+                return `<div class="globe-tooltip">
                     <strong style="color: ${d.name && d.name.includes('SFO') ? '#00ffcc' : '#ff9f43'}; font-size: 14px;">${d.name || "Flight Route"}</strong>
                     <div style="color: #00ffcc; font-size: 12px; margin-top: 4px;">Price: ${d.price === "$0" ? "Calculating..." : d.price}</div>
                     <div style="font-size: 11px; margin-top: 8px; color: #fff; opacity:0.6;">👉 Click to view analysis</div>
