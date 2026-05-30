@@ -59,22 +59,15 @@
     "lat": 25.2532,
     "lng": 55.3657,
     "name": "Dubai (DXB)",
-    "price": "$0",
+    "price": "$1,484",
     "url": "/dubai"
   },
   {
     "lat": 55.9726,
     "lng": 37.4146,
     "name": "Moscow (SVO)",
-    "price": "$0",
+    "price": "$4,464",
     "url": "/moscow"
-  },
-  {
-    "lat": 35.6892,
-    "lng": 51.3134,
-    "name": "Tehran (THR)",
-    "price": "$0",
-    "url": "/tehran"
   },
   {
     "lat": 4.3985,
@@ -87,21 +80,21 @@
     "lat": 19.4336,
     "lng": 37.2341,
     "name": "Port Sudan (PZU)",
-    "price": "$0",
+    "price": "$2,309",
     "url": "/port-sudan"
   },
   {
     "lat": 40.6925,
     "lng": -74.1687,
     "name": "Newark (EWR)",
-    "price": "$0",
+    "price": "$525",
     "url": "/newark"
   },
   {
     "lat": 61.1743,
     "lng": -149.9963,
     "name": "Anchorage (ANC)",
-    "price": "$0",
+    "price": "$813",
     "url": "/anchorage"
   }
 ]
