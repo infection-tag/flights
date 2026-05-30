@@ -1,0 +1,207 @@
+/* =========================================================================
+   1. GLOBAL SYSTEM & GLOBE COMPONENT SETUP
+   ========================================================================= */
+html, body, #app { 
+  margin: 0; 
+  padding: 0; 
+  width: 100%; 
+  height: 100%; 
+  background-color: #000000;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#globeViz { 
+  width: 100%; 
+  height: 100%; 
+  display: block; 
+}
+
+.globe-tooltip {
+  padding: 12px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(4px);
+  border: 1px solid #334155;
+  border-radius: 8px;
+}
+
+/* =========================================================================
+   2. DESTINATION PAGE VIEW STYLES (DIRECT HOOKS)
+   ========================================================================= */
+
+/* The outer page frame */
+.destination-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0f172a !important; /* Forces deep dark blue base */
+  color: #cbd5e1 !important; /* Forces readable light-gray text */
+}
+
+/* Side Panel Framework */
+.side-panel {
+  width: 340px;
+  background-color: #1e293b !important; /* Lighter slate blue panel background */
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  box-sizing: border-box;
+  border-right: 1px solid #334155;
+  z-index: 999;
+}
+
+.flag-container {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.drc-flag {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.city-title {
+  font-size: 2.25rem;
+  margin: 0 0 0.25rem 0;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #ffffff !important; /* Forces white header */
+}
+
+.airport-sub {
+  font-size: 0.9rem;
+  color: #94a3b8 !important;
+  margin: 0;
+}
+
+.divider {
+  border: 0;
+  height: 1px;
+  background-color: #334155;
+  margin: 2rem 0;
+}
+
+/* Meta Parameters */
+.meta-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.meta-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b !important;
+  font-weight: 600;
+}
+
+.meta-value {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #e2e8f0 !important;
+}
+
+.meta-value.highlight {
+  color: #38bdf8 !important; /* Electric Blue Accent */
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+/* Navigation Button Action styling */
+.back-btn {
+  margin-top: auto;
+  background-color: #38bdf8 !important;
+  color: #0f172a !important;
+  border: none;
+  padding: 0.85rem;
+  border-radius: 8px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+}
+
+.panel-footer {
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  color: #475569 !important;
+  text-align: center;
+}
+
+/* Main Content Body Reading Frame */
+.main-content {
+  margin-left: 340px; /* Shifts content completely clear of the side panel */
+  flex: 1;
+  padding: 3.5rem;
+  box-sizing: border-box;
+  max-width: 1050px;
+  background-color: #0f172a !important;
+}
+
+.content-header {
+  margin-bottom: 3rem;
+}
+
+.content-header h2 {
+  font-size: 2.5rem;
+  margin: 0 0 0.5rem 0;
+  color: #ffffff !important;
+  font-weight: 800;
+}
+
+.route-sub {
+  font-size: 1.15rem;
+  color: #38bdf8 !important;
+  font-weight: 500;
+  margin: 0;
+}
+
+.grid-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  margin-top: 1.75rem;
+}
+
+/* Text Content Cards */
+.analysis-card {
+  background-color: #1e293b !important;
+  padding: 2.25rem;
+  border-radius: 12px;
+  border: 1px solid #334155;
+}
+
+.analysis-card h3 {
+  margin: 0 0 1.25rem 0;
+  color: #38bdf8 !important;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.analysis-card p {
+  line-height: 1.75;
+  font-size: 1.05rem;
+  margin: 0 0 1.25rem 0;
+  color: #cbd5e1 !important;
+}
+
+.analysis-card p:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive constraints */
+@media (max-width: 900px) {
+  .destination-container { flex-direction: column; }
+  .side-panel { width: 100%; position: relative; height: auto; padding: 2rem; border-right: none; border-bottom: 1px solid #334155; }
+  .main-content { margin-left: 0; padding: 2rem 1.5rem; }
+}
