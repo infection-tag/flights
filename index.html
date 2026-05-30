@@ -107,7 +107,20 @@
               .labelColor(d => d.name.includes("(SFO)") ? '#00ffcc' : '#ff9f43')
               .labelLabel(d => {
                 // If it's San Francisco, hide the tooltip completely
-                if (d.name.includes("(SFO)")) return '';
+                .labelLabel(d => {
+                    // If it's San Francisco, hide the tooltip completely
+                    if (d.name.includes("(SFO)")) {
+                      return '';
+                    }
+
+                    return `
+                      <div class="globe-tooltip">
+                        <strong style="color: #ff9f43; font-size: 14px;">${d.name || "Flight Route"}</strong>
+                        <div style="color: #00ffcc; font-size: 12px; margin-top: 4px;">Price: ${d.price || "Click to view"}</div>
+                        <div style="font-size: 11px; margin-top: 8px; color: #fff; opacity:0.6;">👉 Learn more about this price</div>
+                      </div>
+                    `;
+                  })
 
                 return `
                   <div class="globe-tooltip">
