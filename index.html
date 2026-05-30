@@ -85,24 +85,18 @@
 
           // Map Layer Logic Builder
           function initializeFlightMap(destinations) {
-            // Build the static flight routes from SFO to all destinations in your JSON
-            const staticArcs = destinations.map(target => ({
-              startLat: SFO_LAT,
-              startLng: SFO_LNG,
-              endLat: target.lat,
-              endLng: target.lng
-            }));
-            
-            // Render flight arcs on the globe map layer
+            // Configure arc visual properties globally
             world
-              .arcsData(staticArcs)
               .arcStartLat(d => d.startLat)
               .arcStartLng(d => d.startLng)
               .arcEndLat(d => d.endLat)
               .arcEndLng(d => d.endLng)
               .arcColor(() => ['#00ffcc', '#ff9f43'])
               .arcAltitude(0.25) 
-              .arcStroke(0.8);     
+              .arcStroke(1);     
+
+            // Start with NO paths visible on initial load
+            world.arcsData([]);
 
             // Combine SFO and destinations for the marker labels
             const allAirports = [sfoAirport, ...destinations];
@@ -121,9 +115,26 @@
                     <div style="font-size: 11px; margin-top: 8px; color: #fff; opacity:0.6;">👉 Click to view analysis</div>
                   </div>
                 `)
+              // 💻 HOVER INTERACTION LOGIC
+              .onLabelHover(hoveredPoint => {
+                // If hovering over a valid destination (and not the SFO origin hub itself)
+                if (hoveredPoint && !hoveredPoint.name.includes("SFO")) {
+                  const dynamicPath = [{
+                    startLat: SFO_LAT,
+                    startLng: SFO_LNG,
+                    endLat: hoveredPoint.lat,
+                    endLng: hoveredPoint.lng
+                  }];
+                  // Draw the single path immediately on hover
+                  world.arcsData(dynamicPath);
+                } else {
+                  // Clear the flight paths entirely when mouse leaves the label
+                  world.arcsData([]); 
+                }
+              })
               .onLabelClick(d => {
                 if (d.url && d.url !== "#") {
-                  window.location.hash = d.url; // Triggers Hash History Navigation
+                  window.location.hash = d.url; 
                 }
               });
           }
@@ -154,7 +165,6 @@
         { path: '/shanghai', component: ShanghaiDestination },
         { path: '/taipei', component: TaipeiDestination },
         { path: '/tel-aviv', component: TelAvivDestination }
-        // Note: You can add /tokyo, /london, /dubai, /moscow, /tehran, /port-sudan, /newark, /anchorage components here as you build them!
       ]
     });
 
