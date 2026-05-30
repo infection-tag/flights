@@ -78,7 +78,7 @@
           const sfoAirport = {
             lat: SFO_LAT,
             lng: SFO_LNG,
-            name: "San Francisco (SFO)", // Updated clean name format
+            name: "San Francisco (SFO)",
             price: "Origin Hub",
             url: "#"
           };
@@ -106,22 +106,9 @@
               .labelDotRadius(0.5)
               .labelColor(d => d.name.includes("(SFO)") ? '#00ffcc' : '#ff9f43')
               .labelLabel(d => {
-                // If it's San Francisco, hide the tooltip completely
-                .labelLabel(d => {
-                    // If it's San Francisco, hide the tooltip completely
-                    if (d.name.includes("(SFO)")) {
-                      return '';
-                    }
-
-                    return `
-                      <div class="globe-tooltip">
-                        <strong style="color: #ff9f43; font-size: 14px;">${d.name || "Flight Route"}</strong>
-                        <div style="color: #00ffcc; font-size: 12px; margin-top: 4px;">Price: ${d.price || "Click to view"}</div>
-                        <div style="font-size: 11px; margin-top: 8px; color: #fff; opacity:0.6;">👉 Learn more about this price</div>
-                      </div>
-                    `;
-                  })
-
+                if (d.name.includes("(SFO)")) {
+                  return '';
+                }
                 return `
                   <div class="globe-tooltip">
                     <strong style="color: #ff9f43; font-size: 14px;">${d.name || "Flight Route"}</strong>
@@ -131,7 +118,6 @@
                 `;
               })
               .onLabelHover(hoveredPoint => {
-                // If there's no item, or if the item is San Francisco, don't draw any paths
                 if (!hoveredPoint || hoveredPoint.name.includes("(SFO)")) {
                   world.arcsData([]);
                   return;
@@ -183,5 +169,3 @@
     app.use(router);
     app.mount('#app');
   </script>
-</body>
-</html>
