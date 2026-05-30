@@ -49,9 +49,20 @@
   <script src="./destinations/taipei.js"></script>
   <script src="./destinations/tel-aviv.js"></script>
   
-  <script>
+<script>
     const { ref, onMounted } = Vue;
     const { createRouter, createWebHashHistory } = VueRouter;
+
+    // Define your destination coordinates directly in the code to prevent 404 fetch errors!
+    const flightDestinations = [
+      { name: "Bangui-M'poko International (BGF)", lat: 4.3984, lng: 18.5188, price: "Highly Elevated", url: "/bangui" },
+      { name: "Charles de Gaulle International (CDG)", lat: 49.0097, lng: 2.5479, price: "+12-20% Surcharge", url: "/paris" },
+      { name: "N'djili International (FIH)", lat: -4.3858, lng: 15.4445, price: "Elevated Premium", url: "/kinshasa" },
+      { name: "Indira Gandhi International (DEL)", lat: 28.5562, lng: 77.1000, price: "Fluctuating", url: "/new-delhi" },
+      { name: "Shanghai Pudong International (PVG)", lat: 31.1443, lng: 121.8083, price: "Route Altered", url: "/shanghai" },
+      { name: "Taoyuan International (TPE)", lat: 25.0797, lng: 121.2342, price: "Congested Path", url: "/taipei" },
+      { name: "Ben Gurion International (TLV)", lat: 32.0055, lng: 34.8854, price: "Conflict Risk Premium", url: "/tel-aviv" }
+    ];
 
     const HomeGlobe = {
       template: `<div id="globeViz" ref="globeViz"></div>`,
@@ -66,7 +77,8 @@
             .atmosphereColor('lightskyblue')
             .atmosphereAltitude(0.2);
 
-          world.controls().autoRotate = false;
+          world.controls().autoRotate = true; // Let's spin it a bit!
+          world.controls().autoRotateSpeed = 0.5;
           world.controls().enablePan = false;
           world.controls().enableZoom = true;
           world.controls().enableDamping = true;
@@ -131,14 +143,8 @@
               });
           }
 
-          // Initial layout pass
-          initializeFlightMap([]);
-
-          // Query live stream configuration
-          fetch('./data.json')
-            .then(res => res.json())
-            .then(jsonData => initializeFlightMap(jsonData))
-            .catch(err => console.error("Data stream pending or missing local server environment:", err));
+          // Pass your hardcoded array data directly to the globe map initialization
+          initializeFlightMap(flightDestinations);
         });
 
         return { globeViz };
