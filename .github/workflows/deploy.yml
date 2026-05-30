@@ -1,4 +1,4 @@
-name: Deploy Vue App to GitHub Pages
+name: Deploy Static HTML App to GitHub Pages
 
 on:
   push:
@@ -24,24 +24,13 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-node: '20'
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build Project
-        run: npm run build
-
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Upload Production Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          path: '.' # 👈 Upload the entire root directory as-is! No npm build required.
 
       - name: Deploy to GitHub Pages
         id: deployment
