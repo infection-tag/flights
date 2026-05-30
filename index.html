@@ -1,96 +1,156 @@
-<script src="https://unpkg.com/globe.gl"></script>
-<div id="globeViz"></div>
-
-<script>
-const world = Globe()(document.getElementById('globeViz'))
-  .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-  .showAtmosphere(true)
-  .atmosphereColor('lightskyblue')
-  .atmosphereAltitude(0.2);
-
-world.controls().autoRotate = false;
-world.controls().enablePan = false;
-world.controls().enableZoom = true;
-world.controls().enableDamping = true;
-
-// 1. GLOBAL ORIGIN (Defined once, used everywhere)
-const SFO_LAT = 37.6213;
-const SFO_LNG = -122.3790;
-
-const sfoAirport = {
-  lat: SFO_LAT,
-  lng: SFO_LNG,
-  name: "San Francisco International (SFO)",
-  price: "Origin Hub",
-  url: "#"
-};
-
-// 2. Setup the Interactive Map Layers
-function initializeFlightMap(destinations) {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Global Flight Tracker</title>
   
-  // === THE FIX ===
-  // Tell the engine HOW to draw arcs BEFORE handling any hover actions
-  world
-    .arcStartLat(d => d.startLat)
-    .arcStartLng(d => d.startLng)
-    .arcEndLat(d => d.endLat)
-    .arcEndLng(d => d.endLng)
-    .arcColor(() => ['#00ffcc', '#ff9f43'])
-    .arcAltitude(0.25) 
-    .arcStroke(1);     // Bumped thickness up slightly so it's highly visible
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.js"></script>
+  <script src="https://unpkg.com/globe.gl"></script>
 
-  const allAirports = [sfoAirport, ...destinations];
+  <style>
+    /* Document Setup */
+    html, body, #app { 
+      margin: 0; 
+      padding: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: #000; 
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    
+    #globeViz { 
+      width: 100%; 
+      height: 100%; 
+      display: block; 
+    }
 
-  world.labelsData(allAirports)
-    .labelLat(d => d.lat)
-    .labelLng(d => d.lng)
-    .labelText(d => d.name)
-    .labelSize(1.3)
-    .labelDotRadius(0.5)
-    .labelColor(d => d.name.includes("SFO") ? '#00ffcc' : '#ff9f43')
-    
-.labelLabel(d => `
-        <div class="globe-tooltip">
-          <strong style="color: ${d.name && d.name.includes('SFO') ? '#00ffcc' : '#ff9f43'}; font-size: 14px;">${d.name || "Flight Route"}</strong>
-          <div style="color: #00ffcc; font-size: 12px; margin-top: 4px;">Price: ${d.price || "Click to view"}</div>
-          <div style="font-size: 11px; margin-top: 8px; color: #fff; opacity:0.6;">👉 Learn more about this price</div>
-        </div>
-      `)
-    
-    // HOVER LOGIC: Generates the flightPath coordinates seamlessly
-    .onLabelHover(hoveredPoint => {
-      if (hoveredPoint && !hoveredPoint.name.includes("SFO")) {
-        const flightPath = {
-          startLat: SFO_LAT,
-          startLng: SFO_LNG,
-          endLat: hoveredPoint.lat,
-          endLng: hoveredPoint.lng,
-          price: hoveredPoint.price
-        };
-        world.arcsData([flightPath]);
-      } else {
-        world.arcsData([]); 
+    /* Globe Label Tooltip Layout */
+    .globe-tooltip {
+      padding: 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #334155;
+      border-radius: 4px;
+      font-family: sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    <router-view></router-view>
+  </div>
+
+  <script src="./destinations/kinshasa.js"></script>
+  
+  <script>
+    const { ref, onMounted } = Vue;
+    const { createRouter, createWebHashHistory } = VueRouter;
+
+    const HomeGlobe = {
+      template: `<div id="globeViz" ref="globeViz"></div>`,
+      setup() {
+        const globeViz = ref(null);
+        
+        onMounted(() => {
+          // Initialize World Container
+          const world = Globe()(globeViz.value)
+            .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+            .showAtmosphere(true)
+            .atmosphereColor('lightskyblue')
+            .atmosphereAltitude(0.2);
+
+          world.controls().autoRotate = false;
+          world.controls().enablePan = false;
+          world.controls().enableZoom = true;
+          world.controls().enableDamping = true;
+
+          // Global SFO Coordinates
+          const SFO_LAT = 37.6213;
+          const SFO_LNG = -122.3790;
+
+          const sfoAirport = {
+            lat: SFO_LAT,
+            lng: SFO_LNG,
+            name: "San Francisco International (SFO)",
+            price: "Origin Hub",
+            url: "#"
+          };
+
+          // Map Layer Logic Builder
+          function initializeFlightMap(destinations) {
+            world
+              .arcStartLat(d => d.startLat)
+              .arcStartLng(d => d.startLng)
+              .arcEndLat(d => d.endLat)
+              .arcEndLng(d => d.endLng)
+              .arcColor(() => ['#00ffcc', '#ff9f43'])
+              .arcAltitude(0.25) 
+              .arcStroke(1);     
+
+            const allAirports = [sfoAirport, ...destinations];
+
+            world.labelsData(allAirports)
+              .labelLat(d => d.lat)
+              .labelLng(d => d.lng)
+              .labelText(d => d.name)
+              .labelSize(1.3)
+              .labelDotRadius(0.5)
+              .labelColor(d => d.name.includes("SFO") ? '#00ffcc' : '#ff9f43')
+              .labelLabel(d => `
+                  <div class="globe-tooltip">
+                    <strong style="color: ${d.name && d.name.includes('SFO') ? '#00ffcc' : '#ff9f43'}; font-size: 14px;">${d.name || "Flight Route"}</strong>
+                    <div style="color: #00ffcc; font-size: 12px; margin-top: 4px;">Price: ${d.price || "Click to view"}</div>
+                    <div style="font-size: 11px; margin-top: 8px; color: #fff; opacity:0.6;">👉 Learn more about this price</div>
+                  </div>
+                `)
+              .onLabelHover(hoveredPoint => {
+                if (hoveredPoint && !hoveredPoint.name.includes("SFO")) {
+                  const flightPath = {
+                    startLat: SFO_LAT,
+                    startLng: SFO_LNG,
+                    endLat: hoveredPoint.lat,
+                    endLng: hoveredPoint.lng,
+                    price: hoveredPoint.price
+                  };
+                  world.arcsData([flightPath]);
+                } else {
+                  world.arcsData([]); 
+                }
+              })
+              .onLabelClick(d => {
+                if (d.url && d.url !== "#") {
+                  window.location.hash = d.url; // Transitions using Hash Router
+                }
+              });
+          }
+
+          // Initial layout pass
+          initializeFlightMap([]);
+
+          // Query live stream configuration
+          fetch('./data.json')
+            .then(res => res.json())
+            .then(jsonData => initializeFlightMap(jsonData))
+            .catch(err => console.error("Data stream pending or missing local server environment:", err));
+        });
+
+        return { globeViz };
       }
-    })
-    
-    .onLabelClick(d => {
-      if (d.url && d.url !== "#") {
-        window.open(d.url, '_blank');
-      }
+    };
+
+    // Router Configuration Map
+    const router = createRouter({
+      history: createWebHashHistory(),
+      routes: [
+        { path: '/', component: HomeGlobe },
+        { path: '/kinshasa', component: KinshasaDestination } 
+      ]
     });
-}
 
-// Render initial empty map
-initializeFlightMap([]);
-
-// 4. Fetch the cleaned JSON
-fetch('./data.json')
-  .then(res => res.json())
-  .then(jsonData => {
-    initializeFlightMap(jsonData);
-  })
-  .catch(err => {
-    console.log("Awaiting data.json stream...");
-  });
-</script>
-<script type="application/json" id="data">
+    const app = Vue.createApp({});
+    app.use(router);
+    app.mount('#app');
+  </script>
+</body>
+</html>
