@@ -1,0 +1,107 @@
+[
+  {
+    "lat": 48.8566,
+    "lng": 2.3522,
+    "name": "Paris (CDG)",
+    "price": "$840",
+    "url": "https://flights.kompella.site/paris"
+  },
+  {
+    "lat": 32.0853,
+    "lng": 34.7818,
+    "name": "Tel Aviv (TLV)",
+    "price": "$1,617",
+    "url": "https://flights.kompella.site/tel-aviv"
+  },
+  {
+    "lat": 35.7767,
+    "lng": 140.3929,
+    "name": "Tokyo (HND)",
+    "price": "$1,322",
+    "url": "https://flights.kompella.site/tokyo"
+  },
+  {
+    "lat": 51.4700,
+    "lng": -0.4543,
+    "name": "London (LHR)",
+    "price": "$790",
+    "url": "https://flights.kompella.site/london"
+  },
+  {
+    "lat": 28.5556,
+    "lng": 77.0952,
+    "name": "New Delhi (DEL)",
+    "price": "$1,542",
+    "url": "https://flights.kompella.site/new-delhi"
+  },
+  {
+    "lat": 31.1433,
+    "lng": 121.8053,
+    "name": "Shanghai (PVG)",
+    "price": "$1,523",
+    "url": "https://flights.kompella.site/shanghai"
+  },
+  {
+    "lat": 25.0778,
+    "lng": 121.2330,
+    "name": "Taipei (TPE)",
+    "price": "$1,513",
+    "url": "https://flights.kompella.site/taipei"
+  },
+  {
+    "lat": -4.3858,
+    "lng": 15.4444,
+    "name": "Kinshasa (FIH)",
+    "price": "$1,420",
+    "url": "https://flights.kompella.site/kinshasa"
+  },
+  {
+    "lat": 25.2532,
+    "lng": 55.3657,
+    "name": "Dubai (DXB)",
+    "price": "$0",
+    "url": "https://flights.kompella.site/dubai"
+  },
+  {
+    "lat": 55.9726,
+    "lng": 37.4146,
+    "name": "Moscow (SVO)",
+    "price": "$0",
+    "url": "https://flights.kompella.site/moscow"
+  },
+  {
+    "lat": 35.6892,
+    "lng": 51.3134,
+    "name": "Tehran (THR)",
+    "price": "$0",
+    "url": "https://flights.kompella.site/tehran"
+  },
+  {
+    "lat": 4.3985,
+    "lng": 18.5188,
+    "name": "Bangui (BGF)",
+    "price": "$0",
+    "url": "https://flights.kompella.site/bangui"
+  },
+  {
+    "lat": 19.4336,
+    "lng": 37.2341,
+    "name": "Port Sudan (PZU)",
+    "price": "$0",
+    "url": "https://flights.kompella.site/port-sudan"
+  },
+  {
+    "lat": 40.6925,
+    "lng": -74.1687,
+    "name": "Newark (EWR)",
+    "price": "$0",
+    "url": "https://flights.kompella.site/newark"
+  },
+  {
+    "lat": 61.1743,
+    "lng": -149.9963,
+    "name": "Anchorage (ANC)",
+    "price": "$0",
+    "url": "https://flights.kompella.site/anchorage"
+  }
+]
