@@ -49,7 +49,7 @@
   <script src="./destinations/taipei.js"></script>
   <script src="./destinations/tel-aviv.js"></script>
   
-<script type="module">
+  <script>
     const { ref, onMounted } = Vue;
     const { createRouter, createWebHashHistory } = VueRouter;
 
@@ -78,13 +78,13 @@
           const sfoAirport = {
             lat: SFO_LAT,
             lng: SFO_LNG,
-            name: "San Francisco (SFO)",
+            name: "San Francisco (SFO)", // Updated clean name format
+            price: "Origin Hub",
             url: "#"
           };
 
           // Map Layer Logic Builder
           function initializeFlightMap(destinations) {
-            // Configure arc visual properties globally
             world
               .arcStartLat(d => d.startLat)
               .arcStartLng(d => d.startLng)
@@ -94,10 +94,8 @@
               .arcAltitude(0.25) 
               .arcStroke(1);     
 
-            // Start with NO paths visible on initial load
             world.arcsData([]);
 
-            // Combine SFO and destinations for the marker labels
             const allAirports = [sfoAirport, ...destinations];
 
             world.labelsData(allAirports)
@@ -106,31 +104,34 @@
               .labelText(d => d.name)
               .labelSize(1.3)
               .labelDotRadius(0.5)
-              .labelColor(d => d.name.includes("SFO") ? '#00ffcc' : '#ff9f43')
-              .labelLabel(d => 
-                if (d.name.includes("SFO")) return '';
-                return `<div class="globe-tooltip">
-                    <strong style="color: ${d.name && d.name.includes('SFO') ? '#00ffcc' : '#ff9f43'}; font-size: 14px;">${d.name || "Flight Route"}</strong>
-                    <div style="color: #00ffcc; font-size: 12px; margin-top: 4px;">Price: ${d.price === "$0" ? "Calculating..." : d.price}</div>
-                    <div style="font-size: 11px; margin-top: 8px; color: #fff; opacity:0.6;">👉 Click to view analysis</div>
+              .labelColor(d => d.name.includes("(SFO)") ? '#00ffcc' : '#ff9f43')
+              .labelLabel(d => {
+                // If it's San Francisco, hide the tooltip completely
+                if (d.name.includes("(SFO)")) return '';
+
+                return `
+                  <div class="globe-tooltip">
+                    <strong style="color: #ff9f43; font-size: 14px;">${d.name || "Flight Route"}</strong>
+                    <div style="color: #00ffcc; font-size: 12px; margin-top: 4px;">Price: ${d.price || "Click to view"}</div>
+                    <div style="font-size: 11px; margin-top: 8px; color: #fff; opacity:0.6;">👉 Learn more about this price</div>
                   </div>
-                `)
-              // 💻 HOVER INTERACTION LOGIC
+                `;
+              })
               .onLabelHover(hoveredPoint => {
-                // If hovering over a valid destination (and not the SFO origin hub itself)
-                if (hoveredPoint && !hoveredPoint.name.includes("SFO")) {
-                  const dynamicPath = [{
-                    startLat: SFO_LAT,
-                    startLng: SFO_LNG,
-                    endLat: hoveredPoint.lat,
-                    endLng: hoveredPoint.lng
-                  }];
-                  // Draw the single path immediately on hover
-                  world.arcsData(dynamicPath);
-                } else {
-                  // Clear the flight paths entirely when mouse leaves the label
-                  world.arcsData([]); 
+                // If there's no item, or if the item is San Francisco, don't draw any paths
+                if (!hoveredPoint || hoveredPoint.name.includes("(SFO)")) {
+                  world.arcsData([]);
+                  return;
                 }
+
+                const flightPath = {
+                  startLat: SFO_LAT,
+                  startLng: SFO_LNG,
+                  endLat: hoveredPoint.lat,
+                  endLng: hoveredPoint.lng,
+                  price: hoveredPoint.price
+                };
+                world.arcsData([flightPath]);
               })
               .onLabelClick(d => {
                 if (d.url && d.url !== "#") {
@@ -139,14 +140,11 @@
               });
           }
 
-          // Fetch your clean data array dynamically from the root folder directory
+          // Fetch the dynamic configurations
           fetch('./data.json')
-            .then(res => {
-              if (!res.ok) throw new Error('Network error pulling data.json file asset');
-              return res.json();
-            })
+            .then(res => res.json())
             .then(jsonData => initializeFlightMap(jsonData))
-            .catch(err => console.error("Data stream pending or missing local environment:", err));
+            .catch(err => console.error("Data error:", err));
         });
 
         return { globeViz };
