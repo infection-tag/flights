@@ -41,7 +41,13 @@
     <router-view></router-view>
   </div>
 
+  <script src="./destinations/bangui.js"></script>
   <script src="./destinations/kinshasa.js"></script>
+  <script src="./destinations/new-delhi.js"></script>
+  <script src="./destinations/paris.js"></script>
+  <script src="./destinations/shanghai.js"></script>
+  <script src="./destinations/taipei.js"></script>
+  <script src="./destinations/tel-aviv.js"></script>
   
   <script>
     const { ref, onMounted } = Vue;
@@ -144,7 +150,13 @@
       history: createWebHashHistory(),
       routes: [
         { path: '/', component: HomeGlobe },
-        { path: '/kinshasa', component: KinshasaDestination } 
+        { path: '/bangui', component: BanguiDestination },
+        { path: '/kinshasa', component: KinshasaDestination },
+        { path: '/new-delhi', component: NewDelhiDestination },
+        { path: '/paris', component: ParisDestination },
+        { path: '/shanghai', component: ShanghaiDestination },
+        { path: '/taipei', component: TaipeiDestination },
+        { path: '/tel-aviv', component: TelAvivDestination }
       ]
     });
 
