@@ -108,7 +108,6 @@
               .labelDotRadius(0.5)
               .labelColor(d => d.name.includes("SFO") ? '#00ffcc' : '#ff9f43')
               .labelLabel(d => `
-                  if (d.name.includes("SFO")) return '';
                   <div class="globe-tooltip">
                     <strong style="color: ${d.name && d.name.includes('SFO') ? '#00ffcc' : '#ff9f43'}; font-size: 14px;">${d.name || "Flight Route"}</strong>
                     <div style="color: #00ffcc; font-size: 12px; margin-top: 4px;">Price: ${d.price === "$0" ? "Calculating..." : d.price}</div>
