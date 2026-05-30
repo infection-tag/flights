@@ -49,20 +49,9 @@
   <script src="./destinations/taipei.js"></script>
   <script src="./destinations/tel-aviv.js"></script>
   
-<script>
+<script type="module">
     const { ref, onMounted } = Vue;
     const { createRouter, createWebHashHistory } = VueRouter;
-
-    // Define your destination coordinates directly in the code to prevent 404 fetch errors!
-    const flightDestinations = [
-      { name: "Bangui-M'poko International (BGF)", lat: 4.3984, lng: 18.5188, price: "Highly Elevated", url: "/bangui" },
-      { name: "Charles de Gaulle International (CDG)", lat: 49.0097, lng: 2.5479, price: "+12-20% Surcharge", url: "/paris" },
-      { name: "N'djili International (FIH)", lat: -4.3858, lng: 15.4445, price: "Elevated Premium", url: "/kinshasa" },
-      { name: "Indira Gandhi International (DEL)", lat: 28.5562, lng: 77.1000, price: "Fluctuating", url: "/new-delhi" },
-      { name: "Shanghai Pudong International (PVG)", lat: 31.1443, lng: 121.8083, price: "Route Altered", url: "/shanghai" },
-      { name: "Taoyuan International (TPE)", lat: 25.0797, lng: 121.2342, price: "Congested Path", url: "/taipei" },
-      { name: "Ben Gurion International (TLV)", lat: 32.0055, lng: 34.8854, price: "Conflict Risk Premium", url: "/tel-aviv" }
-    ];
 
     const HomeGlobe = {
       template: `<div id="globeViz" ref="globeViz"></div>`,
@@ -77,8 +66,7 @@
             .atmosphereColor('lightskyblue')
             .atmosphereAltitude(0.2);
 
-          world.controls().autoRotate = true; // Let's spin it a bit!
-          world.controls().autoRotateSpeed = 0.5;
+          world.controls().autoRotate = false;
           world.controls().enablePan = false;
           world.controls().enableZoom = true;
           world.controls().enableDamping = true;
@@ -97,15 +85,26 @@
 
           // Map Layer Logic Builder
           function initializeFlightMap(destinations) {
+            // Build the static flight routes from SFO to all destinations in your JSON
+            const staticArcs = destinations.map(target => ({
+              startLat: SFO_LAT,
+              startLng: SFO_LNG,
+              endLat: target.lat,
+              endLng: target.lng
+            }));
+            
+            // Render flight arcs on the globe map layer
             world
+              .arcsData(staticArcs)
               .arcStartLat(d => d.startLat)
               .arcStartLng(d => d.startLng)
               .arcEndLat(d => d.endLat)
               .arcEndLng(d => d.endLng)
               .arcColor(() => ['#00ffcc', '#ff9f43'])
               .arcAltitude(0.25) 
-              .arcStroke(1);     
+              .arcStroke(0.8);     
 
+            // Combine SFO and destinations for the marker labels
             const allAirports = [sfoAirport, ...destinations];
 
             world.labelsData(allAirports)
@@ -118,33 +117,25 @@
               .labelLabel(d => `
                   <div class="globe-tooltip">
                     <strong style="color: ${d.name && d.name.includes('SFO') ? '#00ffcc' : '#ff9f43'}; font-size: 14px;">${d.name || "Flight Route"}</strong>
-                    <div style="color: #00ffcc; font-size: 12px; margin-top: 4px;">Price: ${d.price || "Click to view"}</div>
-                    <div style="font-size: 11px; margin-top: 8px; color: #fff; opacity:0.6;">👉 Learn more about this price</div>
+                    <div style="color: #00ffcc; font-size: 12px; margin-top: 4px;">Price: ${d.price === "$0" ? "Calculating..." : d.price}</div>
+                    <div style="font-size: 11px; margin-top: 8px; color: #fff; opacity:0.6;">👉 Click to view analysis</div>
                   </div>
                 `)
-              .onLabelHover(hoveredPoint => {
-                if (hoveredPoint && !hoveredPoint.name.includes("SFO")) {
-                  const flightPath = {
-                    startLat: SFO_LAT,
-                    startLng: SFO_LNG,
-                    endLat: hoveredPoint.lat,
-                    endLng: hoveredPoint.lng,
-                    price: hoveredPoint.price
-                  };
-                  world.arcsData([flightPath]);
-                } else {
-                  world.arcsData([]); 
-                }
-              })
               .onLabelClick(d => {
                 if (d.url && d.url !== "#") {
-                  window.location.hash = d.url; // Transitions using Hash Router
+                  window.location.hash = d.url; // Triggers Hash History Navigation
                 }
               });
           }
 
-          // Pass your hardcoded array data directly to the globe map initialization
-          initializeFlightMap(flightDestinations);
+          // Fetch your clean data array dynamically from the root folder directory
+          fetch('./data.json')
+            .then(res => {
+              if (!res.ok) throw new Error('Network error pulling data.json file asset');
+              return res.json();
+            })
+            .then(jsonData => initializeFlightMap(jsonData))
+            .catch(err => console.error("Data stream pending or missing local environment:", err));
         });
 
         return { globeViz };
@@ -163,6 +154,7 @@
         { path: '/shanghai', component: ShanghaiDestination },
         { path: '/taipei', component: TaipeiDestination },
         { path: '/tel-aviv', component: TelAvivDestination }
+        // Note: You can add /tokyo, /london, /dubai, /moscow, /tehran, /port-sudan, /newark, /anchorage components here as you build them!
       ]
     });
 
