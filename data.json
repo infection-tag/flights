@@ -14,20 +14,6 @@
     "url": "/tel-aviv"
   },
   {
-    "lat": 35.7767,
-    "lng": 140.3929,
-    "name": "Tokyo (HND)",
-    "price": "$1,322",
-    "url": "/tokyo"
-  },
-  {
-    "lat": 51.4700,
-    "lng": -0.4543,
-    "name": "London (LHR)",
-    "price": "$790",
-    "url": "/london"
-  },
-  {
     "lat": 28.5556,
     "lng": 77.0952,
     "name": "New Delhi (DEL)",
