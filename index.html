@@ -41,15 +41,20 @@
     <router-view></router-view>
   </div>
 
+  <script src="./destinations/anchorage.js"></script>
   <script src="./destinations/bangui.js"></script>
+  <script src="./destinations/dubai.js"></script>
   <script src="./destinations/kinshasa.js"></script>
   <script src="./destinations/london.js"></script>
+  <script src="./destinations/moscow.js"></script>
   <script src="./destinations/new-delhi.js"></script>
+  <script src="./destinations/newark.js"></script>
   <script src="./destinations/paris.js"></script>
   <script src="./destinations/port-sudan.js"></script>
   <script src="./destinations/shanghai.js"></script>
   <script src="./destinations/taipei.js"></script>
   <script src="./destinations/tel-aviv.js"></script>
+  <script src="./destinations/tokyo.js"></script>
   
   <script>
     const { ref, onMounted } = Vue;
@@ -152,18 +157,25 @@
       }
     };
 
-    // Router Configuration Map
+    // Master Router Configuration Map
     const router = createRouter({
       history: createWebHashHistory(),
       routes: [
         { path: '/', component: HomeGlobe },
+        { path: '/anchorage', component: AnchorageDestination },
         { path: '/bangui', component: BanguiDestination },
+        { path: '/dubai', component: typeof DubaiDestination !== 'undefined' ? DubaiDestination : { template: '<div>Dubai template missing</div>' } },
         { path: '/kinshasa', component: KinshasaDestination },
+        { path: '/london', component: typeof LondonDestination !== 'undefined' ? LondonDestination : { template: '<div>London template missing</div>' } },
+        { path: '/moscow', component: MoscowDestination },
         { path: '/new-delhi', component: NewDelhiDestination },
+        { path: '/newark', component: NewarkDestination },
         { path: '/paris', component: ParisDestination },
+        { path: '/port-sudan', component: PortSudanDestination },
         { path: '/shanghai', component: ShanghaiDestination },
         { path: '/taipei', component: TaipeiDestination },
-        { path: '/tel-aviv', component: TelAvivDestination }
+        { path: '/tel-aviv', component: TelAvivDestination },
+        { path: '/tokyo', component: typeof TokyoDestination !== 'undefined' ? TokyoDestination : { template: '<div>Tokyo template missing</div>' } }
       ]
     });
 
@@ -171,3 +183,5 @@
     app.use(router);
     app.mount('#app');
   </script>
+</body>
+</html>
